@@ -6,7 +6,7 @@ import RoleGuard from './RoleGuard';
 
 const userWithRoleOnly = {
   id: 'user-1',
-  email: 'futbolista@canchago.local',
+  email: 'acompanante@pasitosmagicos.local',
   name: 'Mateo Vera',
   roles: [{ id: 'role-1', code: 'futbolista', name: 'Futbolista' }],
   permissions: [],

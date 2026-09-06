@@ -17,8 +17,15 @@ export interface SessionUser {
   permissions: PermissionSummary[];
 }
 
-// POST /api/auth/mobile/token (canchago feature 014) — auth nativa, ver feature 003.
+// Respuesta del login móvil — ver feature 003.
 export interface MobileTokenResponse {
   sessionToken: string;
   expiresAt: string;
+}
+
+export interface MobileRegistrationRequest {
+  name: string;
+  username: string;
+  email: string;
+  password: string;
 }

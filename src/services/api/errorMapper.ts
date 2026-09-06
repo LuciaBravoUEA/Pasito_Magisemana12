@@ -52,7 +52,7 @@ export class UnknownError extends AppClientError {
 
 const GENERIC_MESSAGE = 'Ocurrió un error inesperado. Intenta nuevamente.';
 
-// Solo estos códigos existen hoy en canchago (ver api-integration.md §7); BUSINESS_RULE_ERROR/TOO_MANY_REQUESTS
+// Solo estos códigos existen hoy en el backend integrado (ver api-integration.md §7); BUSINESS_RULE_ERROR/TOO_MANY_REQUESTS
 // están reservados en el backend pero ningún endpoint los lanza todavía.
 const buildFromBackendCode = (
   code: string | undefined,
@@ -95,4 +95,22 @@ export const mapApiError = (error: AxiosError<ApiErrorBody>): AppClientError => 
     error.response.status,
     body?.error?.details,
   );
+};
+
+const USER_MESSAGES: Record<string, string> = {
+  VALIDATION_ERROR: 'Revisa los datos marcados e inténtalo nuevamente.',
+  UNAUTHORIZED: 'Tu sesión terminó. Inicia sesión nuevamente.',
+  FORBIDDEN: 'No tienes permiso para realizar esta acción.',
+  NOT_FOUND: 'No encontramos la información solicitada.',
+  METHOD_NOT_ALLOWED: 'Esta acción no está disponible.',
+  CONFLICT: 'La información entra en conflicto con un registro existente.',
+  INTERNAL_ERROR: 'Ocurrió un problema en el servidor. Inténtalo más tarde.',
+  NETWORK_ERROR: 'No pudimos conectarnos. Revisa tu conexión.',
+  TIMEOUT_ERROR: 'La solicitud tardó demasiado. Inténtalo nuevamente.',
+  UNKNOWN_ERROR: GENERIC_MESSAGE,
+};
+
+export const getUserErrorMessage = (error: unknown): string => {
+  if (!(error instanceof AppClientError)) return GENERIC_MESSAGE;
+  return USER_MESSAGES[error.code] ?? GENERIC_MESSAGE;
 };

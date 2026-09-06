@@ -1,6 +1,6 @@
 import { SecureStorage } from '@aparajita/capacitor-secure-storage';
 
-const SESSION_TOKEN_KEY = 'canchago_session_token';
+const SESSION_TOKEN_KEY = 'pasitos_magicos_session_token';
 
 // Único lugar del proyecto que toca este plugin. Cifrado real (Keychain/Keystore), nunca
 // @capacitor/preferences ni localStorage — ver tech-stack.md §7.

@@ -3,12 +3,12 @@ import { loginFormSchema } from './auth';
 
 describe('loginFormSchema', () => {
   it('accepts a valid username/password pair', () => {
-    const result = loginFormSchema.safeParse({ username: 'futbolista', password: 'canchago123' });
+    const result = loginFormSchema.safeParse({ username: 'acompanante', password: 'pasitos123' });
     expect(result.success).toBe(true);
   });
 
   it('rejects an empty username', () => {
-    const result = loginFormSchema.safeParse({ username: '', password: 'canchago123' });
+    const result = loginFormSchema.safeParse({ username: '', password: 'pasitos123' });
     expect(result.success).toBe(false);
   });
 

@@ -3,16 +3,26 @@ import { Capacitor } from '@capacitor/core';
 import { useQueryClient } from '@tanstack/react-query';
 import { useState } from 'react';
 import { Controller, useForm } from 'react-hook-form';
-import { useLocation } from 'react-router-dom';
+import { useHistory, useLocation } from 'react-router-dom';
 import { IonInputPasswordToggle, IonText } from '@ionic/react';
 import AppButton from '../../../components/common/AppButton';
 import AppInput from '../../../components/forms/AppInput';
 import AppPage from '../../../components/layout/AppPage';
-import { loginWithPassword, redirectToLogin } from '../../../services/api/endpoints/auth';
-import { AuthenticationError } from '../../../services/api/errorMapper';
+import { loginWithPassword, redirectToLogin, registerWithPassword } from '../../../services/api/endpoints/auth';
+import {
+  AuthenticationError,
+  BusinessRuleError,
+  getUserErrorMessage,
+  ValidationError,
+} from '../../../services/api/errorMapper';
 import { setSessionToken } from '../../../services/storage/secureToken';
 import { logger } from '../../../services/telemetry/logger';
-import { loginFormSchema, type LoginFormValues } from '../../../validation/auth';
+import {
+  loginFormSchema,
+  registrationFormSchema,
+  type LoginFormValues,
+  type RegistrationFormValues,
+} from '../../../validation/auth';
 import AuthShell from '../components/AuthShell';
 import { SESSION_QUERY_KEY } from '../hooks/useSession';
 import './login-page.css';
@@ -23,7 +33,7 @@ const WebLogin: React.FC<{ hasAuthError: boolean }> = ({ hasAuthError }) => {
   const [isNavigating, setIsNavigating] = useState(false);
 
   return (
-    <AuthShell title="Te damos la bienvenida" description="Continúa con tu cuenta segura de Canchago.">
+    <AuthShell title="Te damos la bienvenida" description="Tu ayuda diaria para crear hábitos positivos y sencillos.">
       {hasAuthError && (
         <IonText className="auth-message auth-message--error" role="alert">
           <p>No se pudo completar el inicio de sesión. Intenta nuevamente.</p>
@@ -46,7 +56,7 @@ const WebLogin: React.FC<{ hasAuthError: boolean }> = ({ hasAuthError }) => {
 
 // Nativo (feature 003): formulario propio de usuario/contraseña — el backend habla con
 // Keycloak por detrás, la app nunca abre un navegador ni una pantalla ajena.
-const NativeLoginForm: React.FC = () => {
+const NativeLoginForm: React.FC<{ onRegister: () => void }> = ({ onRegister }) => {
   const queryClient = useQueryClient();
   const [submitError, setSubmitError] = useState<string | null>(null);
 
@@ -77,7 +87,7 @@ const NativeLoginForm: React.FC = () => {
   };
 
   return (
-    <AuthShell title="Inicia sesión" description="Ingresa tus credenciales para continuar.">
+    <AuthShell title="Inicia sesión" description="Ingresa tus credenciales para continuar con tu rutina.">
       <form className="auth-form" onSubmit={handleSubmit(onSubmit)} noValidate>
         <Controller
           name="username"
@@ -89,7 +99,7 @@ const NativeLoginForm: React.FC = () => {
               value={field.value}
               disabled={isSubmitting}
               error={fieldState.error?.message}
-              onIonInput={event => field.onChange(event.detail.value)}
+              onIonInput={event => field.onChange(event.detail.value ?? '')}
               onIonBlur={field.onBlur}
             />
           )}
@@ -106,7 +116,7 @@ const NativeLoginForm: React.FC = () => {
               value={field.value}
               disabled={isSubmitting}
               error={fieldState.error?.message}
-              onIonInput={event => field.onChange(event.detail.value)}
+              onIonInput={event => field.onChange(event.detail.value ?? '')}
               onIonBlur={field.onBlur}
             >
               <IonInputPasswordToggle slot="end" />
@@ -125,17 +135,94 @@ const NativeLoginForm: React.FC = () => {
         </AppButton>
       </form>
       <p className="auth-shell__privacy">Nunca compartiremos tus credenciales.</p>
+      <AppButton variant="ghost" onClick={onRegister}>
+        Crear una cuenta nueva
+      </AppButton>
+    </AuthShell>
+  );
+};
+
+const NativeRegisterForm: React.FC<{ onLogin: () => void }> = ({ onLogin }) => {
+  const queryClient = useQueryClient();
+  const [submitError, setSubmitError] = useState<string | null>(null);
+  const {
+    control,
+    handleSubmit,
+    setError,
+    formState: { isSubmitting },
+  } = useForm<RegistrationFormValues>({
+    resolver: zodResolver(registrationFormSchema),
+    defaultValues: { name: '', username: '', email: '', password: '' },
+  });
+
+  const onSubmit = async (values: RegistrationFormValues): Promise<void> => {
+    setSubmitError(null);
+
+    try {
+      const { sessionToken } = await registerWithPassword(values);
+      await setSessionToken(sessionToken);
+      await queryClient.invalidateQueries({ queryKey: SESSION_QUERY_KEY });
+    } catch (error) {
+      logger.warn('Registro nativo falló', { code: error instanceof Error ? error.name : 'UNKNOWN' });
+
+      if (error instanceof ValidationError) {
+        const registrationFields = new Set<keyof RegistrationFormValues>(['name', 'username', 'email', 'password']);
+        error.details?.forEach(detail => {
+          if (detail.field && registrationFields.has(detail.field as keyof RegistrationFormValues)) {
+            setError(detail.field as keyof RegistrationFormValues, { message: detail.message });
+          }
+        });
+        setSubmitError('Revisa los campos marcados y vuelve a intentarlo.');
+        return;
+      }
+
+      if (error instanceof BusinessRuleError) {
+        setSubmitError('Ese usuario o correo ya está registrado. Usa datos diferentes.');
+        return;
+      }
+
+      setSubmitError(getUserErrorMessage(error));
+    }
+  };
+
+  return (
+    <AuthShell title="Crea tu cuenta" description="Completa tus datos para comenzar una rutina.">
+      <form className="auth-form" onSubmit={handleSubmit(onSubmit)} noValidate>
+        <Controller name="name" control={control} render={({ field, fieldState }) => (
+          <AppInput label="Nombre" autocomplete="name" value={field.value} disabled={isSubmitting} error={fieldState.error?.message} onIonInput={event => field.onChange(event.detail.value ?? '')} onIonBlur={field.onBlur} />
+        )} />
+        <Controller name="username" control={control} render={({ field, fieldState }) => (
+          <AppInput label="Usuario" autocomplete="username" value={field.value} disabled={isSubmitting} error={fieldState.error?.message} onIonInput={event => field.onChange(event.detail.value ?? '')} onIonBlur={field.onBlur} />
+        )} />
+        <Controller name="email" control={control} render={({ field, fieldState }) => (
+          <AppInput label="Correo" type="email" inputmode="email" autocomplete="email" value={field.value} disabled={isSubmitting} error={fieldState.error?.message} onIonInput={event => field.onChange(event.detail.value ?? '')} onIonBlur={field.onBlur} />
+        )} />
+        <Controller name="password" control={control} render={({ field, fieldState }) => (
+          <AppInput label="Contraseña" type="password" autocomplete="new-password" value={field.value} disabled={isSubmitting} error={fieldState.error?.message} onIonInput={event => field.onChange(event.detail.value ?? '')} onIonBlur={field.onBlur}>
+            <IonInputPasswordToggle slot="end" />
+          </AppInput>
+        )} />
+        {submitError && <IonText className="auth-message auth-message--error" role="alert"><p>{submitError}</p></IonText>}
+        <AppButton expand="block" type="submit" isLoading={isSubmitting}>Crear cuenta</AppButton>
+      </form>
+      <AppButton variant="ghost" onClick={onLogin}>Ya tengo una cuenta</AppButton>
     </AuthShell>
   );
 };
 
 const LoginPage: React.FC = () => {
   const location = useLocation();
+  const history = useHistory();
+  const isRegistering = location.pathname === '/registro';
   const hasAuthError = new URLSearchParams(location.search).get('error') === 'auth';
 
   return (
-    <AppPage title="Iniciar sesión en Canchago" showHeader={false}>
-      {Capacitor.isNativePlatform() ? <NativeLoginForm /> : <WebLogin hasAuthError={hasAuthError} />}
+    <AppPage title="Iniciar sesión en Pasitos Mágicos" showHeader={false}>
+      {Capacitor.isNativePlatform() ? (
+        isRegistering
+           ? <NativeRegisterForm onLogin={() => history.replace(`/login${location.search}`)} />
+           : <NativeLoginForm onRegister={() => history.replace(`/registro${location.search}`)} />
+      ) : <WebLogin hasAuthError={hasAuthError} />}
     </AppPage>
   );
 };

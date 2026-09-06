@@ -43,7 +43,8 @@ export const useLogoutMutation = () => {
       // ProtectedRoute ya montado nunca se enteraría del logout. resetQueries sí refetch-ea
       // las queries activas — es lo que realmente dispara la redirección a /login.
       queryClient.removeQueries({ predicate: query => query.queryKey[0] !== 'auth' });
-      await queryClient.resetQueries({ queryKey: SESSION_QUERY_KEY });
+      await queryClient.cancelQueries({ queryKey: SESSION_QUERY_KEY });
+      queryClient.removeQueries({ queryKey: SESSION_QUERY_KEY });
     },
   });
 };

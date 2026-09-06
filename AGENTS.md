@@ -1,4 +1,4 @@
-# Agent Constitution — canchago-ionic
+# Agent Constitution — pasitos-magicos
 
 > **Leer esto antes de tocar cualquier archivo.** Este documento es la ley para agentes IA en este repositorio. Si algo aquí contradice tu conocimiento general de Ionic, React o Capacitor — **este documento gana**.
 
@@ -6,20 +6,20 @@
 
 ## 1. Contexto del proyecto
 
-`canchago-ionic` es el **cliente móvil oficial** (Ionic + React + TypeScript + Capacitor) de la plataforma SaaS `canchago`. Consume exclusivamente los contratos reales del backend en `/Users/pleones11/Documents/UEA/PROYECTOS/canchago` — **no reimplementa reglas de negocio, no inventa endpoints, no modifica el backend sin instrucción explícita del usuario**.
+`pasitos-magicos` es el **cliente móvil oficial** (Ionic + React + TypeScript + Capacitor) de la plataforma de rutinas gamificadas para niños con TDAH. Consume exclusivamente los contratos reales del backend — **no reimplementa reglas de negocio, no inventa endpoints, no modifica el backend sin instrucción explícita del usuario**.
 
 Lee `spec/constitution/mission.md` para qué construimos y para quién.
 Lee `spec/constitution/tech-stack.md` para las reglas técnicas completas.
-Lee `spec/constitution/api-integration.md` para el contrato real verificado de `canchago` y las propuestas pendientes de aprobación.
+Lee `spec/constitution/api-integration.md` para el contrato real verificado y las propuestas pendientes de aprobación.
 Lee `spec/constitution/roadmap.md` para qué está hecho y qué sigue.
 
-El backend (`canchago`) es **read-only** para este proyecto salvo instrucción explícita en contrario.
+El backend es **read-only** para este proyecto salvo instrucción explícita en contrario.
 
 ---
 
 ## 2. Spec-Driven Development (SDD) — la ley del proyecto
 
-Este proyecto hereda la disciplina SDD de `canchago`: **primero la spec, luego el plan, luego el código. Nunca al revés.**
+Este proyecto hereda la disciplina SDD: **primero la spec, luego el plan, luego el código. Nunca al revés.**
 
 ### Flujo obligatorio para cualquier tarea
 
@@ -27,14 +27,14 @@ Este proyecto hereda la disciplina SDD de `canchago`: **primero la spec, luego e
 PASO 1 — Entiende la constitución
   Lee spec/constitution/tech-stack.md       → ¿la tarea choca con alguna convención o límite duro?
   Lee spec/constitution/mission.md          → ¿encaja con lo que construimos?
-  Lee spec/constitution/api-integration.md  → ¿el contrato que necesitas ya está documentado, o hay que verificarlo en canchago?
+  Lee spec/constitution/api-integration.md  → ¿el contrato que necesitas ya está documentado, o hay que verificarlo?
 
 PASO 2 — Lee la spec de la feature
   Lee spec/features/<NNN>/spec.md   → qué debe hacer, criterios de aceptación medibles
   Lee spec/features/<NNN>/plan.md   → enfoque técnico y decisiones ya tomadas
   Lee spec/features/<NNN>/tasks.md  → qué queda pendiente, qué ya está hecho
 
-PASO 3 — Si el contrato de API no está verificado, léelo directamente en canchago
+PASO 3 — Si el contrato de API no está verificado, léelo directamente del backend
   No copies lo que te diga el usuario de memoria ni lo que documente `GET /api/docs` sin contrastarlo con el código —
   hay envelopes de respuesta documentados incorrectamente en el Swagger real (ver api-integration.md §7).
 
@@ -67,11 +67,11 @@ Confirma con el usuario antes de implementar.
 
 ### Si la tarea necesita un endpoint que no existe o difiere del real
 
-**No lo inventes.** Documenta la necesidad en `spec/constitution/api-integration.md` (endpoint requerido, request/response esperado, motivo, riesgo) y espera confirmación antes de sugerir cambios al backend. Nunca modifiques `canchago` sin instrucción explícita.
+**No lo inventes.** Documenta la necesidad en `spec/constitution/api-integration.md` (endpoint requerido, request/response esperado, motivo, riesgo) y espera confirmación antes de sugerir cambios al backend. Nunca modifiques el backend sin instrucción explícita.
 
 ### La constitución manda
 
-Si una feature choca con `mission.md`, `tech-stack.md` o el contrato real de `canchago`, se replantea la feature — nunca la constitución, y nunca el backend. Si detectas un conflicto, señálalo explícitamente antes de continuar.
+Si una feature choca con `mission.md`, `tech-stack.md` o el contrato real del backend, se replantea la feature — nunca la constitución, y nunca el backend. Si detectas un conflicto, señálalo explícitamente antes de continuar.
 
 ---
 
@@ -121,8 +121,8 @@ Detalle completo en `spec/constitution/tech-stack.md` §11.
 ## 7. Límites duros — lo que nunca se hace
 
 - No reimplementar reglas de negocio del backend "para ir más rápido".
-- No inventar campos, endpoints o shapes de respuesta sin verificarlos leyendo `canchago`.
-- No modificar el repositorio `canchago` sin instrucción explícita del usuario.
+- No inventar campos, endpoints o shapes de respuesta sin verificarlos leyendo el backend.
+- No modificar el repositorio del backend sin instrucción explícita del usuario.
 - No usar `localStorage`/`sessionStorage` para sesión o tokens.
 - No hacer `fetch`/Axios disperso fuera de `services/api/`.
 - No mezclar yarn con npm/pnpm.

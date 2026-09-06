@@ -8,7 +8,7 @@ import { useSession } from './useSession';
 vi.mock('../../../services/api/endpoints/auth', () => ({
   getSession: vi.fn().mockResolvedValue({
     id: 'user-1',
-    email: 'futbolista@canchago.local',
+    email: 'acompanante@pasitosmagicos.local',
     name: 'Mateo Vera',
     roles: [{ id: 'role-1', code: 'futbolista', name: 'Futbolista' }],
     permissions: [],
@@ -32,6 +32,6 @@ describe('useSession', () => {
     await waitFor(() => expect(result.current.isSuccess).toBe(true));
 
     expect(useSessionStore.getState().status).toBe('authenticated');
-    expect(useSessionStore.getState().user?.email).toBe('futbolista@canchago.local');
+    expect(useSessionStore.getState().user?.email).toBe('acompanante@pasitosmagicos.local');
   });
 });

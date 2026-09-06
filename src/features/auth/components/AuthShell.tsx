@@ -1,6 +1,6 @@
 import type { PropsWithChildren } from 'react';
 import { IonIcon } from '@ionic/react';
-import { footballOutline } from 'ionicons/icons';
+import { sparklesOutline } from 'ionicons/icons';
 
 interface AuthShellProps {
   title: string;
@@ -11,13 +11,15 @@ const AuthShell: React.FC<PropsWithChildren<AuthShellProps>> = ({ title, descrip
   <main className="auth-shell">
     <section className="auth-shell__intro" aria-labelledby="auth-brand-title">
       <div className="auth-shell__brand-mark" aria-hidden="true">
-        <IonIcon icon={footballOutline} />
+        <IonIcon icon={sparklesOutline} />
       </div>
-      <p className="auth-shell__eyebrow">Tu cancha, a un toque</p>
+      <p className="auth-shell__eyebrow">Acompañamiento positivo</p>
       <h1 id="auth-brand-title" className="auth-shell__brand-name">
-        canchago
+        Pasitos Mágicos
       </h1>
-      <p className="auth-shell__brand-copy">Gestiona tus espacios deportivos desde cualquier lugar.</p>
+      <p className="auth-shell__brand-copy">
+        Acompañamos cada paso para que la rutina sea más fácil, alegre y motivadora.
+      </p>
     </section>
 
     <section className="auth-shell__card" aria-labelledby="auth-form-title">

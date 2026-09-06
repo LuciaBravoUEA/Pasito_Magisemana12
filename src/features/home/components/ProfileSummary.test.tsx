@@ -6,7 +6,7 @@ import ProfileSummary from './ProfileSummary';
 const user: SessionUser = {
   id: 'user-1',
   name: 'Mateo Vera',
-  email: 'mateo@canchago.local',
+  email: 'mateo@pasitosmagicos.local',
   roles: [{ id: 'role-1', code: 'futbolista', name: 'Futbolista' }],
   permissions: [],
 };
@@ -16,7 +16,7 @@ describe('ProfileSummary', () => {
     render(<ProfileSummary user={user} />);
 
     expect(screen.getByRole('heading', { name: 'Mateo Vera' })).toBeInTheDocument();
-    expect(screen.getByText('mateo@canchago.local')).toBeInTheDocument();
+    expect(screen.getByText('mateo@pasitosmagicos.local')).toBeInTheDocument();
     expect(screen.getByText('Futbolista')).toBeInTheDocument();
   });
 

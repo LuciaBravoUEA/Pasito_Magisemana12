@@ -1,6 +1,6 @@
 import type { AxiosError } from 'axios';
 import { describe, expect, it } from 'vitest';
-import { AuthenticationError, mapApiError, NetworkError, TimeoutError, ValidationError } from './errorMapper';
+import { AuthenticationError, getUserErrorMessage, mapApiError, NetworkError, TimeoutError, ValidationError } from './errorMapper';
 import type { ApiErrorBody } from '../../types/api/common';
 
 const buildAxiosError = (overrides: Partial<AxiosError<ApiErrorBody>>): AxiosError<ApiErrorBody> =>
@@ -55,5 +55,11 @@ describe('mapApiError', () => {
     const error = buildAxiosError({ code: 'ECONNABORTED', response: undefined });
 
     expect(mapApiError(error)).toBeInstanceOf(TimeoutError);
+  });
+
+  it('translates client errors without exposing backend details', () => {
+    expect(getUserErrorMessage(new AuthenticationError('detalle técnico', 401))).toBe('Tu sesión terminó. Inicia sesión nuevamente.');
+    expect(getUserErrorMessage(new NetworkError('socket hang up'))).toBe('No pudimos conectarnos. Revisa tu conexión.');
+    expect(getUserErrorMessage(new Error('secreto'))).toBe('Ocurrió un error inesperado. Intenta nuevamente.');
   });
 });

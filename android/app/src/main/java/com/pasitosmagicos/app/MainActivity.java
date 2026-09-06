@@ -1,4 +1,4 @@
-package ec.canchago.app;
+package com.pasitosmagicos.app;
 
 import com.getcapacitor.BridgeActivity;
 

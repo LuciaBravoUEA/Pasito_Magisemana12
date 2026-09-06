@@ -1,5 +1,6 @@
 import type { ComponentProps } from 'react';
-import { Redirect, Route } from 'react-router-dom';
+import { useEffect } from 'react';
+import { Route, useHistory, useLocation } from 'react-router-dom';
 import { IonSpinner } from '@ionic/react';
 import { useSession } from '../features/auth/hooks/useSession';
 
@@ -9,19 +10,20 @@ type ProtectedRouteProps = ComponentProps<typeof Route>;
 // parpadeo de UI protegida antes de que el 401 real llegue (tech-stack.md §6).
 const ProtectedRoute: React.FC<ProtectedRouteProps> = ({ children, ...routeProps }) => {
   const { isPending, isError } = useSession();
+  const history = useHistory();
+  const location = useLocation();
+  const returnTo = `${location.pathname}${location.search}`;
 
-  if (isPending) {
+  useEffect(() => {
+    if (isError) {
+      history.replace(`/login?returnTo=${encodeURIComponent(returnTo)}`);
+    }
+  }, [history, isError, returnTo]);
+
+  if (isPending || isError) {
     return (
       <Route {...routeProps}>
         <IonSpinner name="dots" />
-      </Route>
-    );
-  }
-
-  if (isError) {
-    return (
-      <Route {...routeProps}>
-        <Redirect to="/login" />
       </Route>
     );
   }

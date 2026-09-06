@@ -1,31 +1,31 @@
 # Misión
 
-_Proveer la experiencia móvil oficial de Canchago: una aplicación Ionic + React + TypeScript, profesional y segura, que consuma exclusivamente los contratos reales del backend `canchago` para que administradores, personal de sede y deportistas gestionen y reserven espacios deportivos desde el teléfono._
+_Proveer la experiencia móvil oficial de Pasitos Mágicos: una aplicación Ionic + React + TypeScript, clara, segura y accesible que acompaña las rutinas de niños con TDAH mediante tareas pequeñas y refuerzo positivo._
 
 ## Qué construimos
 
-Construimos el cliente móvil (y web embebible) de la plataforma SaaS multi-tenant `canchago`. No reimplementamos reglas de negocio: las consumimos.
+Construimos el cliente móvil de Pasitos Mágicos. La experiencia de rutinas actual funciona con estado local; cualquier persistencia o dato compartido futuro consume solo contratos reales del backend.
 
-1. **Cliente fiel al contrato** — Una capa de tipos TypeScript y servicios de API que reflejan exactamente lo que el backend expone hoy (no lo que "debería" exponer). Ningún endpoint se inventa; si falta, se documenta como propuesta en `api-integration.md` y se espera confirmación.
-2. **Experiencia multi-rol** — La misma app sirve a administradores (gestión de organizaciones, sedes, usuarios, roles) y a deportistas (búsqueda y reserva de espacios), mostrando solo lo que el permiso del usuario autoriza — el backend es siempre la autoridad final, el frontend solo oculta/muestra UI.
-3. **Base extensible y segura** — Arquitectura modular por feature, lista para crecer hacia el motor de reservas cuando el backend lo exponga, sin convertirse en un monolito de pantallas acopladas.
+1. **Rutinas motivadoras** — Tareas y hábitos diarios se presentan de forma visible, concreta y amable, con progreso, estrellas y refuerzo positivo.
+2. **Acompañamiento compartido** — Padres y docentes reciben un resumen sencillo del día para decidir el siguiente paso de apoyo.
+3. **Base extensible y segura** — Arquitectura modular por feature, lista para integrar persistencia cuando exista un contrato aprobado, sin convertir la app en un monolito de pantallas acopladas.
 
 ## Para quién
 
-- **Administradores y personal de sede:** necesitan gestionar organizaciones, sedes, usuarios y roles desde el móvil con la misma seguridad que la web.
-- **Deportistas y clientes finales:** necesitan una experiencia rápida y sin fricción para descubrir disponibilidad y reservar (cuando el backend exponga ese dominio).
-- **El propio equipo de desarrollo:** se beneficia de una capa de API centralizada, tipada y trazable que evita que la lógica de contrato se disperse entre pantallas.
+- **Niños con TDAH:** necesitan una secuencia diaria predecible, sencilla y estimulante.
+- **Padres y docentes:** necesitan observar el avance y acompañar las actividades pendientes sin una herramienta compleja.
+- **El propio equipo de desarrollo:** se beneficia de una capa de API centralizada, tipada y trazable cuando se incorporen contratos de persistencia.
 
 ## Principios
 
-- **El backend es la fuente de verdad** — Ningún modelo, endpoint o regla de negocio se inventa en el frontend. Se lee el código real de `canchago` antes de integrar cualquier pantalla.
-- **El Contrato es la Ley (heredado de `canchago`)** — Igual que el backend no programa un endpoint sin spec aprobada, el frontend no consume un endpoint sin haber verificado su contrato real y documentado su tipo.
-- **Modularidad por feature** — Cada dominio (auth, usuarios, organizaciones, roles, reservas futuras) vive en su propio directorio bajo `src/features/`, desacoplado de los demás.
+- **El backend es la fuente de verdad cuando hay datos remotos** — Ningún modelo, endpoint o regla de negocio se inventa en el frontend.
+- **El Contrato es la Ley** — El frontend no consume un endpoint sin haber verificado su contrato real y documentado su tipo.
+- **Modularidad por feature** — Cada dominio (autenticación, rutinas, reportes futuros) vive en su propio directorio bajo `src/features/`, desacoplado de los demás.
 - **Seguridad por diseño, no por parche** — Sesión, tokens y datos sensibles se tratan con el mismo rigor que exige OWASP Mobile/API, desde el primer commit, no como revisión posterior.
 - **Trazabilidad extremo a extremo** — Toda operación relevante debe poder rastrearse desde el usuario y la pantalla hasta el request HTTP y su resultado, correlacionando con los identificadores que exponga el backend.
 
 ## Qué NO es
 
-- NO es un lugar para reimplementar validaciones de negocio que ya vive en el backend — solo mejora UX; el backend valida siempre.
-- NO es un proyecto con frontend web separado: es una sola base Ionic React que se empaqueta como app nativa (Capacitor) y, si conviene, como PWA.
-- NO es un cliente que confía en sí mismo para autorización: los permisos que muestra son un reflejo de lo que el backend concede, nunca una fuente independiente.
+- NO es un lugar para inventar persistencia, perfiles o reglas clínicas sin un contrato y una spec aprobados.
+- NO es un proyecto con frontend web separado: es una sola base Ionic React que se empaqueta como app nativa con Capacitor.
+- NO sustituye el acompañamiento profesional, familiar o docente.
