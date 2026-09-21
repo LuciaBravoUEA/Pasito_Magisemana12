@@ -92,6 +92,67 @@
   gap: 16px;
 }
 
+.native-login-input {
+  display: grid;
+  gap: 6px;
+}
+
+.native-login-input label {
+  color: var(--app-color-text-muted);
+  font-size: 0.8rem;
+}
+
+.native-login-input input {
+  width: 100%;
+  min-height: 58px;
+  box-sizing: border-box;
+  padding: 14px;
+  border: 1px solid var(--app-color-border);
+  border-radius: var(--app-radius-sm);
+  color: var(--app-color-text);
+  background: var(--app-color-surface-muted);
+  font: inherit;
+  outline: none;
+}
+
+.native-login-input input:focus {
+  border-color: var(--app-color-brand);
+  box-shadow: 0 0 0 2px rgb(var(--ion-color-primary-rgb) / 18%);
+}
+
+.native-password-input {
+  display: flex;
+  align-items: center;
+  border: 1px solid var(--app-color-border);
+  border-radius: var(--app-radius-sm);
+  background: var(--app-color-surface-muted);
+}
+
+.native-password-input input {
+  border: 0;
+  background: transparent;
+}
+
+.native-password-input button {
+  flex: 0 0 auto;
+  margin-right: 10px;
+  border: 0;
+  color: var(--app-color-brand);
+  background: transparent;
+  font: inherit;
+  font-size: 0.75rem;
+  font-weight: 700;
+}
+
+.native-login-input input[aria-invalid='true'] {
+  border-color: var(--app-color-danger-text);
+}
+
+.native-login-input [role='alert'] {
+  color: var(--app-color-danger-text);
+  font-size: 0.8rem;
+}
+
 .app-input {
   min-height: 58px;
   --background: var(--app-color-surface-muted);

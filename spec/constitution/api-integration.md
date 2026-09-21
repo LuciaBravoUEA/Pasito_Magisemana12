@@ -23,7 +23,7 @@ POST /api/auth/refresh     → auth requerido → 204 (rota tokens si quedan <5m
 POST /api/auth/logout      → auth requerido → 204 (revoca en Keycloak + marca revokedAt en UserSession)
 ```
 
-`SessionUser = { id, email, name, roles: [{id, code, name}], permissions: [{id, code}] }`.
+`SessionUser = { id, sub?, email, name, roles: [{id, code, name}], permissions: [{id, code}] }`. El backend local conserva `sub` en el payload Bearer y expone también `id = sub` en `/api/auth/session` para cumplir el contrato del cliente.
 
 **Cookies:**
 - `canchago_session` — `HttpOnly; Secure; SameSite=Lax; Path=/`, 8h. Solo contiene `{sessionId, createdAt}` sellado con `@hapi/iron`; los tokens OAuth reales viven server-side en la tabla `user_sessions`.
@@ -114,8 +114,51 @@ _Cada vez que una feature nueva descubra o requiera un contrato distinto a lo aq
 - **2026-08-14** — Feature `002-autenticacion`: contrato de auth (§2) **confirmado con prueba real** contra el backend corriendo local (Postgres nativo + Keycloak vía Docker + `yarn dev`), no solo leído. Flujo completo login → sesión → logout probado dos veces: primero con `curl` + cookie jar (usuario semilla `futbolista`/`canchago123`), después con Chrome headless real (Playwright) ejecutando el código real de `canchago-ionic`. Se corrigió la estrategia de "mismo origen" documentada en `tech-stack.md` §6 — la idea original (`Capacitor server.url` apuntando al backend) no es viable tal como estaba escrita; ver el post-mortem en ese documento. La solución real para desarrollo es un proxy de Vite; para el empaquetado nativo, el gap de §3 de este documento sigue abierto y sin resolver.
 - **2026-08-30** — Entorno local `pasitos-backend`: se agregó `POST /api/auth/mobile/register` para pruebas de desarrollo. Acepta `{ name, username, email, password }` y devuelve `{ data: { sessionToken, expiresAt } }`. Las cuentas se mantienen solo en memoria del contenedor y se pierden al reiniciarlo; no es un contrato de producción ni sustituye Keycloak.
 - **2026-08-30** — Auditoría feature `009`: el repositorio local disponible `pasitos-backend` no contiene los endpoints históricos de organizaciones, sedes, usuarios, roles o permisos descritos en las secciones 6–9; solo implementa health y autenticación local. Por tanto esos contratos no son ejecutables en el entorno actual y no pueden respaldar evidencia de listado/detalle/creación. Para el nuevo trabajo académico se requiere aprobar un contrato real de rutinas en `pasitos-backend` o recuperar el backend `canchago`. No se implementó ningún endpoint ficticio en el cliente.
+- **2026-09-19** — Feature `010`: se detectó que `POST /api/auth/refresh` responde `204` sin cuerpo — suficiente para el flujo cookie/web (la rotación queda en la cookie que gestiona el navegador), pero insuficiente para el flujo Bearer/nativo, que necesita recibir el token rotado para reemplazarlo en `secureToken.ts`. **Propuesta pendiente de aprobación** (no implementada en el backend): que `/api/auth/refresh` devuelva `{ data: { sessionToken, expiresAt } }` (mismo shape que `/auth/mobile/login`) cuando la petición llega con `Authorization: Bearer`, en vez de `204`. Mientras tanto, el interceptor de renovación del cliente (`apiClient.ts`) acepta ambas respuestas: si hay cuerpo, rota el token guardado; si es `204`, asume que la sesión sigue vigente y reintenta la petición original una sola vez.
+
+## 11. Tabla de correspondencia servidor ↔ cliente (identidad + rutinas)
+
+_Contrato real verificado en §2 y §9 de este documento, y en `prisma/schema.prisma` de `pasitos-backend`. Todos los campos opcionales del backend se modelan como anulables (`nullable()`/`?`) en el cliente — nunca se asume `undefined` donde el backend puede enviar `null` explícito._
+
+| Campo servidor | Tipo servidor | Campo cliente (`types/api/*.ts`) | Anulable | Divergencia de nombre |
+|---|---|---|---|---|
+| `SessionUser.id` | `string` (uuid) | `SessionUser.id` | no | ninguna |
+| `SessionUser.email` | `string` | `SessionUser.email` | no | ninguna |
+| `SessionUser.name` | `string` | `SessionUser.name` | no | ninguna |
+| `SessionUser.roles[]` | `{id, code, name}[]` | `SessionUser.roles: RoleSummary[]` | no | ninguna |
+| `SessionUser.permissions[]` | `{id, code}[]` | `SessionUser.permissions: PermissionSummary[]` | no | ninguna |
+| `rutina.id` | `string` (uuid) | `Routine.id` | no | ninguna |
+| `rutina.userId` | `string` (uuid) | `Routine.userId` | no | ninguna |
+| `rutina.title` | `string` | `Routine.title` | no | ninguna |
+| `rutina.description` | `string \| null` | `Routine.description` | **sí** (`.nullable()`) | ninguna |
+| `rutina.category` | enum string | `Routine.category: RoutineCategory` | no | ninguna |
+| `rutina.points` | `number` | `Routine.points` | no | ninguna |
+| `rutina.completed` | `boolean` | `Routine.completed` | no | ninguna |
+| `rutina.createdAt` | `string` (ISO) | `Routine.createdAt` | no | ninguna |
+
+**Nota:** hoy no existe ninguna divergencia real de nombre entre `pasitos-backend` y el cliente (ambos usan los mismos identificadores en inglés para el dominio de rutinas, a pesar de que las rutas HTTP están en español — `/api/rutinas`). Se documenta explícitamente en cada schema Zod (`types/api/routines.ts`, `types/api/auth.ts`) con un comentario `// divergencia:` junto a cada campo, incluso cuando dice "ninguna", para que quede evidenciado que se revisó campo por campo y no que se omitió la verificación.
+
 # Actualización: registro móvil persistente
 
 `POST /api/auth/mobile/register` persiste la cuenta en PostgreSQL. `username` y `email` se normalizan a minúsculas y son únicos. La contraseña se almacena exclusivamente como hash `scrypt` con sal aleatoria. Las cuentas creadas sobreviven al reinicio del backend y pueden autenticarse posteriormente mediante `POST /api/auth/mobile/login`.
 
 Las operaciones `GET /api/rutinas`, `GET /api/rutinas/{routineId}` y `POST /api/rutinas` también persisten en PostgreSQL. El detalle se reconstruye mediante el UUID de la ruta y continúa disponible después de reiniciar el backend.
+
+## 12. Seguimiento educativo — feature 012
+
+El backend local añade tablas `tasks`, `student_guardians`, `student_teachers` y `task_completions` mediante la migración `prisma/migrations/012_student_tracking/migration.sql`.
+
+| Recurso | Ruta | Autorización |
+|---|---|---|
+| Estudiantes asignados | `GET /api/estudiantes/asignados?date=YYYY-MM-DD` | Padre/tutor por `student_guardians`; docente por `student_teachers` |
+| Progreso | `GET /api/estudiantes/{studentId}/progreso?date=YYYY-MM-DD` | Estudiante propio o relación autorizada |
+| Cumplimiento | `POST /api/tareas/{taskId}/completar` | Solo el estudiante propietario de la rutina |
+
+Los cumplimientos usan una restricción única `(studentId, taskId, activityDate)` y `upsert`; repetir la operación del mismo día no genera duplicados.
+# Corrección verificada de autenticación local — 2026-09-20
+
+Autorizada por el usuario para `pasitos-backend`. Login/registro conservan `{ data: { sessionToken, expiresAt } }`. Los nuevos tokens son opacos y aleatorios; solo su hash SHA-256 se guarda en `user_sessions`, usando la tabla existente. `GET /api/auth/session` consulta PostgreSQL y reconstruye la identidad actual. Las sesiones sobreviven al reinicio durante su vigencia de 24 horas; los tokens anteriores en memoria requieren un nuevo login.
+
+`POST /api/auth/logout` existe ahora en el backend local y responde 204 tras revocar la sesión. `POST /api/auth/refresh` responde 204 y extiende el mismo token aún vigente; responde 401 si falta, expiró o fue revocado. La propuesta histórica de rotación con respuesta JSON no se implementa: conservar el token hace compatible este 204 con el cliente nativo actual.
+
+Validación real con una cuenta temporal propia: registro, login, misma sesión y mismas credenciales después de reiniciar Docker, refresh, logout y rechazo de tokens revocados, vencidos e inventados. Cuenta temporal eliminada. Los errores 500 históricos quedaron confirmados en logs, pero su excepción original no estaba registrada; ahora se registra nombre/código del error sin credenciales ni tokens.

@@ -7,6 +7,7 @@ import AppCard from '../components/common/AppCard';
 import ResourceState from '../components/feedback/ResourceState';
 import AppPage from '../components/layout/AppPage';
 import { useLogoutMutation } from '../features/auth/hooks/useSession';
+import ChatbotWidget from '../features/chatbot/components/ChatbotWidget';
 import ProfileSummary from '../features/home/components/ProfileSummary';
 import { useSessionStore } from '../store/sessionStore';
 import './home.css';
@@ -81,6 +82,10 @@ const Home: React.FC = () => {
 
             <ProfileSummary user={user} />
 
+            <section className="home-section" aria-label="Seguimiento educativo">
+              <AppButton onClick={() => history.push('/seguimiento')}>Ver seguimiento</AppButton>
+            </section>
+
             <section className="home-summary" aria-label="Progreso diario">
               <AppCard title="Tu avance" description={`${completedCount} de ${routines.length} tareas completadas`} metadata={<span>{progress}% listo</span>} tone="highlight" />
               <AppCard title="Estrellas ganadas" description={String(stars)} metadata={<span>¡Sigue así!</span>} />
@@ -123,6 +128,8 @@ const Home: React.FC = () => {
           <AppButton variant="secondary" isLoading={logoutMutation.isPending} onClick={() => void handleLogout()}>Cerrar sesión</AppButton>
         </footer>
       </main>
+
+      <ChatbotWidget userName={user?.name.split(' ')[0]} />
     </AppPage>
   );
 };

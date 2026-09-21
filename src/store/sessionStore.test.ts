@@ -3,9 +3,9 @@ import { useSessionStore } from './sessionStore';
 
 const sampleUser = {
   id: 'user-1',
-  email: 'acompanante@pasitosmagicos.local',
-  name: 'Mateo Vera',
-  roles: [{ id: 'role-1', code: 'futbolista', name: 'Futbolista' }],
+  email: 'evam.jampa@pasitosmagicos.local',
+  name: 'Evam Jampa',
+  roles: [{ id: 'role-1', code: 'estudiante', name: 'Estudiante' }],
   permissions: [],
 };
 

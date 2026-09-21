@@ -1,6 +1,11 @@
 import React from 'react';
 import { createRoot } from 'react-dom/client';
 import App from './app/App';
+import { assertSecureProductionConfig } from './config/env';
+
+// Falla rápido en vez de arrancar un build de producción con configuración insegura
+// (HTTP sin excepción documentada) — ver spec/features/010-cliente-http-datos-chatbot/plan.md §5.
+assertSecureProductionConfig();
 
 const container = document.getElementById('root');
 const root = createRoot(container!);

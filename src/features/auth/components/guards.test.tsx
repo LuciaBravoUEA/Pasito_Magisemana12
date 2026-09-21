@@ -6,9 +6,9 @@ import RoleGuard from './RoleGuard';
 
 const userWithRoleOnly = {
   id: 'user-1',
-  email: 'acompanante@pasitosmagicos.local',
-  name: 'Mateo Vera',
-  roles: [{ id: 'role-1', code: 'futbolista', name: 'Futbolista' }],
+  email: 'evam.jampa@pasitosmagicos.local',
+  name: 'Evam Jampa',
+  roles: [{ id: 'role-1', code: 'estudiante', name: 'Estudiante' }],
   permissions: [],
 };
 
@@ -21,12 +21,12 @@ describe('RoleGuard', () => {
     useSessionStore.getState().setSession(userWithRoleOnly);
 
     render(
-      <RoleGuard role="futbolista">
-        <p>contenido de futbolista</p>
+      <RoleGuard role="estudiante">
+        <p>contenido de estudiante</p>
       </RoleGuard>,
     );
 
-    expect(screen.getByText('contenido de futbolista')).toBeInTheDocument();
+    expect(screen.getByText('contenido de estudiante')).toBeInTheDocument();
   });
 
   it('renders nothing when the user lacks the required role', () => {
@@ -43,7 +43,7 @@ describe('RoleGuard', () => {
 });
 
 describe('PermissionGuard', () => {
-  it('renders nothing for a user with a role but no permissions (caso real: futbolista)', () => {
+  it('renders nothing for a user with a role but no permissions', () => {
     useSessionStore.getState().setSession(userWithRoleOnly);
 
     render(

@@ -4,7 +4,7 @@ import { useQueryClient } from '@tanstack/react-query';
 import { useState } from 'react';
 import { Controller, useForm } from 'react-hook-form';
 import { useHistory, useLocation } from 'react-router-dom';
-import { IonInputPasswordToggle, IonText } from '@ionic/react';
+import { IonText } from '@ionic/react';
 import AppButton from '../../../components/common/AppButton';
 import AppInput from '../../../components/forms/AppInput';
 import AppPage from '../../../components/layout/AppPage';
@@ -93,36 +93,11 @@ const NativeLoginForm: React.FC<{ onRegister: () => void }> = ({ onRegister }) =
           name="username"
           control={control}
           render={({ field, fieldState }) => (
-            <AppInput
-              label="Usuario"
-              autocomplete="username"
-              value={field.value}
-              disabled={isSubmitting}
-              error={fieldState.error?.message}
-              onIonInput={event => field.onChange(event.detail.value ?? '')}
-              onIonBlur={field.onBlur}
-            />
+            <AppInput label="Usuario" name="username" type="text" autocomplete="username" value={field.value} disabled={isSubmitting} clearOnEdit={false} error={fieldState.error?.message} onIonInput={event => field.onChange(event.detail.value ?? '')} onIonBlur={field.onBlur} />
           )}
         />
 
-        <Controller
-          name="password"
-          control={control}
-          render={({ field, fieldState }) => (
-            <AppInput
-              label="Contraseña"
-              type="password"
-              autocomplete="current-password"
-              value={field.value}
-              disabled={isSubmitting}
-              error={fieldState.error?.message}
-              onIonInput={event => field.onChange(event.detail.value ?? '')}
-              onIonBlur={field.onBlur}
-            >
-              <IonInputPasswordToggle slot="end" />
-            </AppInput>
-          )}
-        />
+        <Controller name="password" control={control} render={({ field, fieldState }) => <NativePasswordField name="password" autoComplete="current-password" value={field.value} disabled={isSubmitting} error={fieldState.error?.message} onChange={field.onChange} onBlur={field.onBlur} />} />
 
         {submitError && (
           <IonText className="auth-message auth-message--error" role="alert" aria-live="polite">
@@ -139,6 +114,31 @@ const NativeLoginForm: React.FC<{ onRegister: () => void }> = ({ onRegister }) =
         Crear una cuenta nueva
       </AppButton>
     </AuthShell>
+  );
+};
+
+interface NativePasswordFieldProps {
+  name: string;
+  value: string;
+  autoComplete: string;
+  error?: string;
+  disabled: boolean;
+  onChange: (value: string) => void;
+  onBlur: () => void;
+}
+
+const NativePasswordField: React.FC<NativePasswordFieldProps> = ({ name, value, autoComplete, error, disabled, onChange, onBlur }) => {
+  const [visible, setVisible] = useState(false);
+
+  return (
+    <div className="native-login-input">
+      <label htmlFor={`auth-${name}`}>Contraseña</label>
+      <div className="native-password-input">
+        <input id={`auth-${name}`} name={name} type={visible ? 'text' : 'password'} inputMode="text" autoComplete={autoComplete} value={value} disabled={disabled} aria-label="Contraseña" aria-invalid={Boolean(error)} onChange={event => onChange(event.target.value)} onBlur={onBlur} />
+        <button type="button" aria-label={visible ? 'Ocultar contraseña' : 'Mostrar contraseña'} onClick={() => setVisible(current => !current)}>{visible ? 'Ocultar' : 'Mostrar'}</button>
+      </div>
+      {error && <span role="alert">{error}</span>}
+    </div>
   );
 };
 
@@ -188,20 +188,10 @@ const NativeRegisterForm: React.FC<{ onLogin: () => void }> = ({ onLogin }) => {
   return (
     <AuthShell title="Crea tu cuenta" description="Completa tus datos para comenzar una rutina.">
       <form className="auth-form" onSubmit={handleSubmit(onSubmit)} noValidate>
-        <Controller name="name" control={control} render={({ field, fieldState }) => (
-          <AppInput label="Nombre" autocomplete="name" value={field.value} disabled={isSubmitting} error={fieldState.error?.message} onIonInput={event => field.onChange(event.detail.value ?? '')} onIonBlur={field.onBlur} />
-        )} />
-        <Controller name="username" control={control} render={({ field, fieldState }) => (
-          <AppInput label="Usuario" autocomplete="username" value={field.value} disabled={isSubmitting} error={fieldState.error?.message} onIonInput={event => field.onChange(event.detail.value ?? '')} onIonBlur={field.onBlur} />
-        )} />
-        <Controller name="email" control={control} render={({ field, fieldState }) => (
-          <AppInput label="Correo" type="email" inputmode="email" autocomplete="email" value={field.value} disabled={isSubmitting} error={fieldState.error?.message} onIonInput={event => field.onChange(event.detail.value ?? '')} onIonBlur={field.onBlur} />
-        )} />
-        <Controller name="password" control={control} render={({ field, fieldState }) => (
-          <AppInput label="Contraseña" type="password" autocomplete="new-password" value={field.value} disabled={isSubmitting} error={fieldState.error?.message} onIonInput={event => field.onChange(event.detail.value ?? '')} onIonBlur={field.onBlur}>
-            <IonInputPasswordToggle slot="end" />
-          </AppInput>
-        )} />
+        <Controller name="name" control={control} render={({ field, fieldState }) => <AppInput label="Nombre" name="name" type="text" autocomplete="name" value={field.value} disabled={isSubmitting} clearOnEdit={false} error={fieldState.error?.message} onIonInput={event => field.onChange(event.detail.value ?? '')} onIonBlur={field.onBlur} />} />
+        <Controller name="username" control={control} render={({ field, fieldState }) => <AppInput label="Usuario" name="username" type="text" autocomplete="username" value={field.value} disabled={isSubmitting} clearOnEdit={false} error={fieldState.error?.message} onIonInput={event => field.onChange(event.detail.value ?? '')} onIonBlur={field.onBlur} />} />
+        <Controller name="email" control={control} render={({ field, fieldState }) => <AppInput label="Correo" name="email" type="email" autocomplete="email" value={field.value} disabled={isSubmitting} clearOnEdit={false} error={fieldState.error?.message} onIonInput={event => field.onChange(event.detail.value ?? '')} onIonBlur={field.onBlur} />} />
+        <Controller name="password" control={control} render={({ field, fieldState }) => <NativePasswordField name="password" autoComplete="new-password" value={field.value} disabled={isSubmitting} error={fieldState.error?.message} onChange={field.onChange} onBlur={field.onBlur} />} />
         {submitError && <IonText className="auth-message auth-message--error" role="alert"><p>{submitError}</p></IonText>}
         <AppButton expand="block" type="submit" isLoading={isSubmitting}>Crear cuenta</AppButton>
       </form>

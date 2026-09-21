@@ -25,6 +25,17 @@ yarn android
 yarn android:run
 ```
 
+### Teclado del emulador Android
+
+Si aparece el panel de escritura a mano en lugar del teclado, ejecuta:
+
+```bash
+adb -e shell settings put secure stylus_handwriting_enabled 0
+adb -e shell settings put secure show_ime_with_hard_keyboard 1
+```
+
+Cierra el panel con Atrás y toca Usuario de nuevo. Estos ajustes persisten solo en ese emulador. Para restaurar escritura a mano: `adb -e shell settings delete secure stylus_handwriting_enabled`.
+
 ### Frontend — iOS
 
 ```bash
@@ -128,3 +139,14 @@ Guarda evidencia en `docs/evidence/` con este formato:
 ## Uso de inteligencia artificial
 
 Se utilizó Codex para inspeccionar configuración, implementar cambios y ejecutar verificaciones. Consultas principales: diagnóstico de login/emulador, registro local, configuración de teclado, auditoría del SDK Android y endurecimiento de tráfico HTTP. Verificaciones efectuadas: lint, TypeScript, pruebas Vitest, build Vite, Capacitor sync, compilación Android `assembleDebug`, preflight CORS y respuesta `201` del registro local. Toda salida debe validarse manualmente en el emulador antes de una entrega.
+# Inicio de sesión después de cerrar el editor
+
+El backend local se ejecuta en Docker, independiente de Visual Studio Code. Mantén Docker Desktop y PostgreSQL activos. Para arrancarlo desde esta carpeta:
+
+```powershell
+docker compose -f ../pasitos-backend/docker-compose.yml up -d --no-deps pasitos-backend
+```
+
+El puerto del host es `3001`; el emulador usa `http://10.0.2.2:3001/api`. La configuración `restart: unless-stopped` permite recuperar el contenedor al volver a iniciar Docker, salvo que se haya detenido explícitamente. No hace falta dejar una terminal abierta.
+
+Las sesiones nuevas se conservan en PostgreSQL durante 24 horas y sobreviven a reinicios. Tras esta corrección hay que iniciar sesión una vez: los tokens anteriores, que solo existían en memoria, no se migran. El login ya no restablece cuentas ni contraseñas de prueba.

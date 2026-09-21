@@ -38,7 +38,7 @@ describe('LoginPage', () => {
     expect(screen.getByRole('heading', { name: 'Pasitos Mágicos' })).toBeInTheDocument();
     expect(screen.getByText('Acompañamos cada paso para que la rutina sea más fácil, alegre y motivadora.')).toBeInTheDocument();
     expect(container.querySelector('ion-input[label="Usuario"]')).toBeInTheDocument();
-    expect(container.querySelector('ion-input[label="Contraseña"]')).toBeInTheDocument();
+    expect(container.querySelector('input[name="password"]')).toBeInTheDocument();
     expect(container.querySelector('ion-button[type="submit"]')).toHaveTextContent('Iniciar sesión');
   });
 
@@ -52,14 +52,8 @@ describe('LoginPage', () => {
     fireEvent.submit(form!);
 
     await waitFor(() => {
-      expect(container.querySelector('ion-input[label="Usuario"]')).toHaveAttribute(
-        'error-text',
-        'El usuario es obligatorio',
-      );
-      expect(container.querySelector('ion-input[label="Contraseña"]')).toHaveAttribute(
-        'error-text',
-        'La contraseña es obligatoria',
-      );
+      expect(container.querySelector('ion-input[label="Usuario"]')).toHaveAttribute('error-text', 'El usuario es obligatorio');
+      expect(screen.getByText('La contraseña es obligatoria')).toBeInTheDocument();
     });
   });
 
@@ -70,6 +64,6 @@ describe('LoginPage', () => {
 
     expect(container.querySelector('ion-button')).toHaveTextContent('Continuar');
     expect(container.querySelector('ion-input[label="Usuario"]')).not.toBeInTheDocument();
-    expect(container.querySelector('ion-input[label="Contraseña"]')).not.toBeInTheDocument();
+    expect(container.querySelector('input[name="password"]')).not.toBeInTheDocument();
   });
 });

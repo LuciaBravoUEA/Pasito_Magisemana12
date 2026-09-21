@@ -1,7 +1,7 @@
 import { apiClient } from '../apiClient';
 import { env } from '../../../config/env';
 import type { ApiSuccessEnvelope } from '../../../types/api/common';
-import type { MobileRegistrationRequest, MobileTokenResponse, SessionUser } from '../../../types/api/auth';
+import type { MobileRegistrationRequest, MobileTokenResponse, RefreshResponse, SessionUser } from '../../../types/api/auth';
 
 // GET /api/auth/login es una redirección de navegador (Keycloak), nunca una llamada Axios —
 // ver spec/constitution/api-integration.md §2.
@@ -16,8 +16,13 @@ export const getSession = async (): Promise<SessionUser> => {
   return data.data;
 };
 
-export const refreshSession = async (): Promise<void> => {
-  await apiClient.post('/auth/refresh');
+// El contrato real hoy responde 204 sin cuerpo (flujo cookie/web). Se deja preparado para el
+// caso en que el backend adopte el cuerpo `{ data: { sessionToken, expiresAt } }` también para
+// el flujo Bearer/nativo (propuesta pendiente, ver api-integration.md) — si no hay cuerpo,
+// devuelve `null` y el interceptor de renovación asume que el token sigue vigente.
+export const refreshSession = async (): Promise<RefreshResponse> => {
+  const { data } = await apiClient.post<ApiSuccessEnvelope<RefreshResponse> | undefined>('/auth/refresh');
+  return data?.data ?? null;
 };
 
 export const logout = async (): Promise<void> => {

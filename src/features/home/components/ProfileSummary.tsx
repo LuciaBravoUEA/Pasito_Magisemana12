@@ -1,4 +1,7 @@
 import { IonChip } from '@ionic/react';
+import AppButton from '../../../components/common/AppButton';
+import { isPhotoPickerAvailable } from '../../../services/device/routinePhotoPicker';
+import { useLocalPhoto } from '../../../hooks/use-local-photo';
 import type { SessionUser } from '../../../types/api/auth';
 
 interface ProfileSummaryProps {
@@ -18,10 +21,13 @@ const getInitials = (name: string): string => {
     .join('');
 };
 
-const ProfileSummary: React.FC<ProfileSummaryProps> = ({ user }) => (
-  <section className="profile-summary" aria-labelledby="profile-title">
-    <div className="profile-summary__avatar" aria-hidden="true">
-      {getInitials(user.name)}
+const ProfileSummary: React.FC<ProfileSummaryProps> = ({ user }) => {
+  const photo = useLocalPhoto(user.id, 'perfil');
+  const profilePhoto = photo.photo;
+
+  return <section className="profile-summary" aria-labelledby="profile-title">
+    <div className="profile-summary__avatar" aria-label={profilePhoto ? 'Foto de perfil' : 'Iniciales del perfil'}>
+      {profilePhoto ? <img src={profilePhoto} alt={`Foto de perfil de ${user.name}`} onError={photo.onImageError} /> : getInitials(user.name)}
     </div>
     <div className="profile-summary__identity">
       <p className="profile-summary__label">Tu cuenta</p>
@@ -35,7 +41,13 @@ const ProfileSummary: React.FC<ProfileSummaryProps> = ({ user }) => (
         <p className="profile-summary__empty">Aún no tienes roles asignados.</p>
       )}
     </div>
-  </section>
-);
+    {isPhotoPickerAvailable() && <div className="profile-summary__photo-actions" aria-label="Acciones de foto de perfil">
+      <AppButton variant="secondary" disabled={photo.busy} onClick={() => void photo.choose('camera')}>Tomar foto</AppButton>
+      <AppButton variant="secondary" disabled={photo.busy} onClick={() => void photo.choose('gallery')}>Elegir foto</AppButton>
+    </div>}
+    {photo.message && <p role="status">{photo.message}</p>}
+    {photo.needsSettings && <AppButton variant="ghost" onClick={() => void photo.openSettings()}>Abrir ajustes</AppButton>}
+  </section>;
+};
 
 export default ProfileSummary;

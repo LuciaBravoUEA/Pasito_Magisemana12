@@ -61,3 +61,7 @@ Ninguno de estos era evidente por adelantado — todos aparecieron al probar con
 - MFA/social login para el cliente móvil — ROPC no lo soporta bien; ver `014` para el detalle.
 - Certificate pinning / HTTPS real — pendiente hasta que exista un backend desplegado con dominio real (ver `.env.production`).
 - Automatizar la escritura de credenciales en un teclado nativo real (esta validación se hizo disparando eventos DOM reales vía Chrome DevTools Protocol contra el WebView de la app instalada en el emulador — el formulario, el JS y el backend son 100% reales; lo único no ejercitado es literalmente el dedo tocando el teclado físico, que es UI del sistema operativo, no código de la app).
+
+## Mantenimiento autorizado 2026-09-20
+
+Corregir el backend local para conservar sesiones válidas tras reiniciar y arrancar fuera de la terminal del IDE. Se preservan los contratos de login y session. Logout revoca la sesión persistida y refresh devuelve 204 extendiendo el mismo token vigente. No se cambia la contraseña de ninguna cuenta desde el login.

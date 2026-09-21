@@ -5,9 +5,9 @@ import ProfileSummary from './ProfileSummary';
 
 const user: SessionUser = {
   id: 'user-1',
-  name: 'Mateo Vera',
-  email: 'mateo@pasitosmagicos.local',
-  roles: [{ id: 'role-1', code: 'futbolista', name: 'Futbolista' }],
+  name: 'Evam Jampa',
+  email: 'evam.jampa@pasitosmagicos.local',
+  roles: [{ id: 'role-1', code: 'estudiante', name: 'Estudiante' }],
   permissions: [],
 };
 
@@ -15,9 +15,9 @@ describe('ProfileSummary', () => {
   it('shows session identity and assigned roles', () => {
     render(<ProfileSummary user={user} />);
 
-    expect(screen.getByRole('heading', { name: 'Mateo Vera' })).toBeInTheDocument();
-    expect(screen.getByText('mateo@pasitosmagicos.local')).toBeInTheDocument();
-    expect(screen.getByText('Futbolista')).toBeInTheDocument();
+    expect(screen.getByRole('heading', { name: 'Evam Jampa' })).toBeInTheDocument();
+    expect(screen.getByText('evam.jampa@pasitosmagicos.local')).toBeInTheDocument();
+    expect(screen.getByText('Estudiante')).toBeInTheDocument();
   });
 
   it('shows an understandable empty state without roles', () => {

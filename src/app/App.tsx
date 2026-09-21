@@ -1,11 +1,9 @@
 import { IonApp, setupIonicReact } from '@ionic/react';
-import { Capacitor } from '@capacitor/core';
-import { Keyboard, KeyboardResize } from '@capacitor/keyboard';
 import { IonReactRouter } from '@ionic/react-router';
 import { QueryClientProvider } from '@tanstack/react-query';
-import { useEffect } from 'react';
 import AppRoutes from '../routes/AppRoutes';
 import { queryClient } from './queryClient';
+import { LocalSync } from './local-sync';
 
 /* Core CSS required for Ionic components to work properly */
 import '@ionic/react/css/core.css';
@@ -32,17 +30,10 @@ import '../theme/variables.css';
 setupIonicReact();
 
 const App: React.FC = () => {
-  useEffect(() => {
-    if (!Capacitor.isNativePlatform()) {
-      return;
-    }
-
-    void Keyboard.setResizeMode({ mode: KeyboardResize.Body }).catch(() => undefined);
-  }, []);
-
   return (
     <QueryClientProvider client={queryClient}>
       <IonApp>
+        <LocalSync />
         <IonReactRouter>
           <AppRoutes />
         </IonReactRouter>

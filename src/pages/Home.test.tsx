@@ -13,9 +13,9 @@ vi.mock('../features/auth/hooks/useSession', () => ({
 
 const baseUser: SessionUser = {
   id: 'user-1',
-  name: 'Mateo Vera',
-  email: 'mateo@pasitosmagicos.local',
-  roles: [{ id: 'role-1', code: 'acompanante', name: 'Acompañante' }],
+  name: 'Evam Jampa',
+  email: 'evam.jampa@pasitosmagicos.local',
+  roles: [{ id: 'role-1', code: 'estudiante', name: 'Estudiante' }],
   permissions: [],
 };
 
@@ -32,7 +32,7 @@ describe('Home', () => {
     render(<Home />);
 
     expect(screen.getByText('Pasitos Mágicos')).toBeInTheDocument();
-    expect(screen.getByRole('heading', { name: 'Hola, Mateo' })).toBeInTheDocument();
+    expect(screen.getByRole('heading', { name: 'Hola, Evam' })).toBeInTheDocument();
     expect(screen.getByRole('heading', { name: 'Rutinas de hoy' })).toBeInTheDocument();
     expect(screen.getByText('2 de 4 tareas completadas')).toBeInTheDocument();
     expect(screen.getByText('Estrellas ganadas')).toBeInTheDocument();

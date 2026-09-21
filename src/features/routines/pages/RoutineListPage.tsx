@@ -4,6 +4,7 @@ import AppCard from '../../../components/common/AppCard';
 import ResourceState from '../../../components/feedback/ResourceState';
 import AppPage from '../../../components/layout/AppPage';
 import { useRoutines } from '../hooks/useRoutines';
+import { PendingOperations } from '../components/pending-operations';
 import './routines.css';
 
 const getPage = (search: string): number => {
@@ -15,7 +16,7 @@ const RoutineListPage: React.FC = () => {
   const history = useHistory();
   const location = useLocation();
   const page = getPage(location.search);
-  const { state, meta } = useRoutines(page);
+  const { state, meta, syncStatus } = useRoutines(page);
 
   return (
     <AppPage title="Mis rutinas">
@@ -27,6 +28,12 @@ const RoutineListPage: React.FC = () => {
             <AppButton onClick={() => history.push('/rutinas/nueva')}>Crear rutina</AppButton>
           </div>
         </header>
+        <PendingOperations />
+
+        {syncStatus.lastSyncedAt && <p role="status" className="routine-page__sync-status">
+          {syncStatus.isStale ? 'Puedes estar viendo datos desactualizados.' : 'Datos sincronizados.'}{' '}
+          Última sincronización: {new Date(syncStatus.lastSyncedAt).toLocaleString()}.
+        </p>}
 
         <ResourceState
           status={state.status}

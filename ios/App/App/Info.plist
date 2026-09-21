@@ -31,6 +31,13 @@
 		<key>NSAllowsArbitraryLoads</key>
 		<true/>
 	</dict>
+	<!-- Selector de fotos del sistema (services/device/routinePhotoPicker.ts, @capacitor/camera
+	     chooseFromGallery): cadena de propósito específica del flujo real de la app, nunca genérica.
+	     No se guarda automáticamente en la galería; no se requiere permiso de escritura. -->
+	<key>NSPhotoLibraryUsageDescription</key>
+	<string>Pasitos Mágicos te permite elegir una imagen como foto de perfil o evidencia de una rutina. La copia se guarda solo en este dispositivo y no se sube ni se comparte.</string>
+	<key>NSCameraUsageDescription</key>
+	<string>Pasitos Mágicos usa la cámara cuando eliges tomar una foto de perfil o una evidencia de rutina. La foto se guarda solo en este dispositivo, sin subirla ni compartirla.</string>
 	<key>LSRequiresIPhoneOS</key>
 	<true/>
 	<key>UIApplicationSceneManifest</key>

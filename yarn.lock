@@ -1183,6 +1183,15 @@ __metadata:
   languageName: node
   linkType: hard
 
+"@capacitor/camera@npm:8.2.4":
+  version: 8.2.4
+  resolution: "@capacitor/camera@npm:8.2.4"
+  peerDependencies:
+    "@capacitor/core": ">=8.0.0"
+  checksum: 08d015157ba5463bd94d34342eceb2f6031fdd616155f8000fc83e9b0f98b43d2c36658ea0e6e84d1d5fb1c57c00c1be44032240ef6551dcd787e53ceb0449a4
+  languageName: node
+  linkType: hard
+
 "@capacitor/cli@npm:8.5.0":
   version: 8.5.0
   resolution: "@capacitor/cli@npm:8.5.0"
@@ -1221,15 +1230,6 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@capacitor/haptics@npm:8.0.2":
-  version: 8.0.2
-  resolution: "@capacitor/haptics@npm:8.0.2"
-  peerDependencies:
-    "@capacitor/core": ">=8.0.0"
-  checksum: fc0f80121ee389687dc4dc4d78081130aa26aab51ac7b5790525c7fc91d5bad43dc47c11d857251ded19c24c5c0ef50529899c2184ae9d80c02194f7ab161775
-  languageName: node
-  linkType: hard
-
 "@capacitor/ios@npm:8.5.0, @capacitor/ios@npm:^8.0.2":
   version: 8.5.0
   resolution: "@capacitor/ios@npm:8.5.0"
@@ -1245,6 +1245,15 @@ __metadata:
   peerDependencies:
     "@capacitor/core": ">=8.0.0"
   checksum: be544819489e3d57c6d8dfbdaf1ee4a6f80c32af8ed4ace39075604bb09dcdb99b4d1f92a19c6f706c0dcf84cca2d0fe0533e3300723cd2e0d667825d47afefb
+  languageName: node
+  linkType: hard
+
+"@capacitor/local-notifications@npm:8.3.1":
+  version: 8.3.1
+  resolution: "@capacitor/local-notifications@npm:8.3.1"
+  peerDependencies:
+    "@capacitor/core": ">=8.0.0"
+  checksum: 15e562eea0215233c55e429109d598cbe225b76d336e57185014c382b54413176753c28c417abafd05d727070613b28a2b9240c24ff77f62cebaf68c69473729
   languageName: node
   linkType: hard
 
@@ -3504,6 +3513,15 @@ __metadata:
   languageName: node
   linkType: hard
 
+"capacitor-native-settings@npm:8.2.0":
+  version: 8.2.0
+  resolution: "capacitor-native-settings@npm:8.2.0"
+  peerDependencies:
+    "@capacitor/core": ">=8.0.2"
+  checksum: af914f54f8ecf5895cb9fd0154af02f506c7fd46bb495860f9e1a8b7847640ee5e15ee47c4119f810fda8ec29b7bcdce71bb8a41c0c0fbc818ddcc5c9d3728f6
+  languageName: node
+  linkType: hard
+
 "caseless@npm:~0.12.0":
   version: 0.12.0
   resolution: "caseless@npm:0.12.0"
@@ -4602,6 +4620,13 @@ __metadata:
   version: 1.3.0
   resolution: "extsprintf@npm:1.3.0"
   checksum: cee7a4a1e34cffeeec18559109de92c27517e5641991ec6bab849aa64e3081022903dd53084f2080d0d2530803aa5ee84f1e9de642c365452f9e67be8f958ce2
+  languageName: node
+  linkType: hard
+
+"fake-indexeddb@npm:^6.2.5":
+  version: 6.2.5
+  resolution: "fake-indexeddb@npm:6.2.5"
+  checksum: c53da95aa71b7c49b38a1d821fecb0f5a342c08ad505702bc4e830d855684e6c923a06cca55977a8ea2daf55218a8076bb6ef3476452076072cb0679494b9972
   languageName: node
   linkType: hard
 
@@ -6468,11 +6493,12 @@ __metadata:
     "@aparajita/capacitor-secure-storage": 8.0.0
     "@capacitor/android": 8.5.0
     "@capacitor/app": 8.1.1
+    "@capacitor/camera": 8.2.4
     "@capacitor/cli": 8.5.0
     "@capacitor/core": 8.5.0
-    "@capacitor/haptics": 8.0.2
     "@capacitor/ios": 8.5.0
     "@capacitor/keyboard": 8.0.5
+    "@capacitor/local-notifications": 8.3.1
     "@capacitor/preferences": 8.0.1
     "@capacitor/status-bar": 8.0.3
     "@hookform/resolvers": 5.8.0
@@ -6490,11 +6516,13 @@ __metadata:
     "@vitejs/plugin-legacy": ^5.0.0
     "@vitejs/plugin-react": ^4.0.1
     axios: 1.19.0
+    capacitor-native-settings: 8.2.0
     cypress: ^13.5.0
     eslint: ^9.20.1
     eslint-plugin-react: ^7.32.2
     eslint-plugin-react-hooks: ^5.1.0
     eslint-plugin-react-refresh: ^0.4.19
+    fake-indexeddb: ^6.2.5
     globals: ^15.15.0
     ionicons: ^7.4.0
     jsdom: ^22.1.0

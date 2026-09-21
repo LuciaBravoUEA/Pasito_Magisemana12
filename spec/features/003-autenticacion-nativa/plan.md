@@ -37,3 +37,11 @@ _A diferencia de la versión anterior de esta feature (que no pudo completar un 
 5. Los 6 gaps de infraestructura documentados en `spec.md` se descubrieron y corrigieron exactamente así — probando contra el sistema real, no contra mocks, tal como exige el proceso de este proyecto.
 
 **No se automatizó**: escribir las credenciales tecleando en el teclado físico/virtual del emulador (eso es interacción de UI del sistema operativo). Se llenaron los campos disparando los mismos eventos DOM que el teclado dispararía, contra el mismo formulario real.
+
+## Corrección de persistencia 2026-09-20
+
+1. Eliminar el reseteo implícito de la cuenta semilla durante login.
+2. Persistir hash de tokens opacos en la tabla existente user_sessions y reconstruir identidad desde users.
+3. Implementar logout/refresh usados por el cliente; mantener token al renovar para compatibilidad 204.
+4. Arranque Docker desacoplado, restart unless-stopped y regeneración de Prisma.
+5. Verificar reinicio con cuentas de prueba propias y ejecutar checks.

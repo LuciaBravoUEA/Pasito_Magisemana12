@@ -9,6 +9,10 @@
 
 ## Registro
 
+### Corrección de teclado Android (2026-09-20)
+
+Conservar `IonInput`. Al tocar un campo editable, enfocar mediante `setFocus()` y solicitar el teclado con el plugin existente solo en Android; permitir reabrirlo tras cerrarlo con Atrás. Configurar `adjustResize` y `Keyboard.resizeOnFullScreen` para mantener accesible el formulario. Validar en el emulador, sin enviar credenciales, y ejecutar los checks del proyecto.
+
 Tras la aprobación del contrato, agregar:
 
 1. Tipos API y endpoint en `services/api/endpoints/auth.ts`.

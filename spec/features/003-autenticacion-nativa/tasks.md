@@ -40,3 +40,9 @@
 
 - [x] Validado contra los criterios de aceptación de `spec.md`.
 - [x] Roadmap actualizado con la revisión completa.
+
+## Corrección de persistencia 2026-09-20
+
+- [x] Corregir login y sesiones persistentes del backend local.
+- [x] Guardar arranque independiente del IDE y documentarlo.
+- [x] Verificar autenticación, reinicio, revocación y checks: cuenta temporal propia, reinicio real, expiración y revocación; cliente lint/typecheck/77 tests/build; backend TypeScript y lint de autenticación.

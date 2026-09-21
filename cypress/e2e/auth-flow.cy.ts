@@ -30,9 +30,9 @@ describe('authentication flow', () => {
         body: {
           data: {
             id: 'user-1',
-            email: 'familia@pasitos.local',
-            name: 'María Pérez',
-            roles: [],
+            email: 'evam.jampa@pasitosmagicos.local',
+            name: 'Evam Jampa',
+            roles: [{ id: 'role-1', code: 'estudiante', name: 'Estudiante' }],
             permissions: [],
           },
         },
@@ -45,7 +45,7 @@ describe('authentication flow', () => {
     }).as('logout');
 
     cy.visit('/home');
-    cy.contains('Hola, María').should('be.visible');
+    cy.contains('Hola, Evam').should('be.visible');
     cy.contains('button', 'Cerrar sesión').click();
 
     cy.wait('@logout');

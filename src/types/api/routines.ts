@@ -1,20 +1,32 @@
+import { z } from 'zod';
+
 export const ROUTINE_CATEGORIES = ['ESCUELA', 'HOGAR', 'CALMA', 'AUTOCUIDADO'] as const;
 export type RoutineCategory = (typeof ROUTINE_CATEGORIES)[number];
 
-export interface Routine {
-  id: string;
-  userId: string;
-  title: string;
-  description: string | null;
-  category: RoutineCategory;
-  points: number;
-  completed: boolean;
-  createdAt: string;
-}
+// Schema generado (Zod) = fuente única de verdad para el tipo y la validación/serialización
+// en tiempo de ejecución (parse/safeParse), en vez de mantener una interface manual aparte.
+// Ningún campo diverge de nombre con `GET/POST /api/rutinas` (ver api-integration.md §9) —
+// se deja el patrón `// divergencia:` documentado por si el backend renombra un campo.
+export const routineSchema = z.object({
+  id: z.string(),
+  userId: z.string(),
+  title: z.string(),
+  // divergencia: ninguna hoy; el backend ya envía `description: string | null` (nunca `undefined`).
+  description: z.string().nullable(),
+  category: z.enum(ROUTINE_CATEGORIES),
+  points: z.number(),
+  completed: z.boolean(),
+  createdAt: z.string(),
+});
 
-export interface CreateRoutineRequest {
-  title: string;
-  description?: string;
-  category: RoutineCategory;
-  points: number;
-}
+export type Routine = z.infer<typeof routineSchema>;
+
+export const createRoutineRequestSchema = z.object({
+  title: z.string().min(1),
+  // Opcional en el request: el backend lo acepta ausente y lo persiste como `null`.
+  description: z.string().optional(),
+  category: z.enum(ROUTINE_CATEGORIES),
+  points: z.number().int().positive(),
+});
+
+export type CreateRoutineRequest = z.infer<typeof createRoutineRequestSchema>;

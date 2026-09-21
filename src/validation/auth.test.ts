@@ -3,7 +3,7 @@ import { loginFormSchema } from './auth';
 
 describe('loginFormSchema', () => {
   it('accepts a valid username/password pair', () => {
-    const result = loginFormSchema.safeParse({ username: 'acompanante', password: 'pasitos123' });
+    const result = loginFormSchema.safeParse({ username: 'evam.jampa', password: 'pasitos123' });
     expect(result.success).toBe(true);
   });
 
@@ -13,7 +13,7 @@ describe('loginFormSchema', () => {
   });
 
   it('rejects an empty password', () => {
-    const result = loginFormSchema.safeParse({ username: 'futbolista', password: '' });
+    const result = loginFormSchema.safeParse({ username: 'evam.jampa', password: '' });
     expect(result.success).toBe(false);
   });
 });

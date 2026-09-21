@@ -20,5 +20,12 @@
 
 ## Cierre
 
+### Corrección del teclado (2026-09-20)
+
+- [x] Apertura explícita del teclado Android al tocar AppInput editable y redimensionamiento.
+- [x] Desactivar escritura a mano del emulador y documentar recuperación en README.
+- [x] APK instalado: teclado QWERTY, escritura por ADB y tecla virtual, reapertura tras Atrás.
+- [x] Lint, typecheck, 56 tests, build, cap:sync y assembleDebug satisfactorios.
+
 - [x] Ejecutar lint, typecheck, test, build y `cap:sync`.
 - [x] Actualizar el roadmap y el contrato API.

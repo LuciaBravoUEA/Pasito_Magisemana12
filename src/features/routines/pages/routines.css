@@ -13,9 +13,17 @@
 .routine-form { display: grid; gap: var(--pm-space-4); }
 .routine-form ion-select { min-height: var(--pm-touch-target-min); --background: var(--pm-color-surface-muted); --border-color: var(--pm-color-border); --border-radius: var(--pm-radius-sm); }
 .routine-form__actions { display: flex; justify-content: flex-end; gap: var(--pm-space-3); }
+.routine-form__reminder { display: grid; gap: var(--pm-space-2); }
+.routine-detail__evidence { display: grid; gap: var(--pm-space-3); margin-top: var(--pm-space-4); justify-items: start; }
+.routine-detail__evidence-image { width: 100%; max-width: 320px; border-radius: var(--pm-radius-sm); }
 @media (max-width: 480px) { .routine-page__header { align-items: stretch; flex-direction: column; } .routine-form__actions, .routine-form__actions .app-button { width: 100%; } .routine-form__actions { flex-direction: column-reverse; } }
 .routine-page__navigation {
   display: flex;
   flex-wrap: wrap;
   gap: var(--app-space-2);
+}
+.routine-page__sync-status {
+  margin: calc(var(--pm-space-4) * -1) auto var(--pm-space-5);
+  color: var(--pm-color-text-muted);
+  font-size: var(--pm-font-size-sm);
 }
